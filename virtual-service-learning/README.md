@@ -47,11 +47,16 @@ spec:
             host: nginx-service.default.svc.cluster.local
             subset: version2
           weight: 10
----
 ```
 
 ### Parameter definitions
-**spec.hosts:** Hosts (urls called by client) can be in any form like load balancer domain name (Istio ingress LB) or kubernetes service name (FQDN) or a wildcard pattern. Only when clients use these urls, the defined routing configurations will be executed.
+**spec.hosts:** Hosts (urls in host header in the request body called by client) can be in any form like load balancer domain name (Istio ingress LB) or kubernetes service name (FQDN) or a wildcard pattern. Only when clients use these urls, the defined routing configurations will be executed.
+
+![Alt text](virtual-service-1.png)
+The above images shows that though the GET URL if different domain, it still works because host param is the domain name of Load balancer given by istio gateway
+
+![Alt text](virtual-service-2.png)
+The above pic show though the GET url is Load balancing URL, it still fails because host is not allowed in virtual service and gateway.
 
 For example, clients outside the cluster will use the Istio ingress load balancer url and clients inside the cluster will use the K8s service DNS name (nginx-service.default.svc.cluster.local);
 
