@@ -1,0 +1,44 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: nginx-gateway
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+    - port:
+        number: 80
+        name: http
+        protocol: HTTP
+      hosts:
+        - "*.nginx.sandipan.domainfortesting.link" # sandipan.domainfortesting.link is a domain.
+        # *.nginx is a sub domain created in AWS Route 53
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: nginx-virtual-service-v1
+spec:
+  hosts:
+    - "v1.nginx.sandipan.domainfortesting.link" # this allows traffic from the defined host (v1.*)
+  gateways:
+    - nginx-gateway
+  http:
+    - route:
+        - destination:
+            host: nginx-service-v1
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: nginx-virtual-service-v2
+spec:
+  hosts:
+    - "v2.nginx.sandipan.domainfortesting.link" # this  allows traffic from the defined host (v2.*)
+  gateways:
+    - nginx-gateway
+  http:
+    - route:
+        - destination:
+            host: nginx-service-v2
+---
