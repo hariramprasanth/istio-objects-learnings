@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: mediator
+  labels:
+    name: mediator
+spec:
+  containers:
+    - name: mediator
+      image: public.ecr.aws/z6b8a8c7/nodejs-mediator:latest
+      ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mediator-service
+spec:
+  selector:
+    name: mediator
+  ports:
+    - port: 80
+  type: ClusterIP

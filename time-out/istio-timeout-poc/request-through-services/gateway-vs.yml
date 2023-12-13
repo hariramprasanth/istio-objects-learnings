@@ -1,0 +1,46 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: ingress-gateway
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+    - port:
+        number: 80
+        name: http
+        protocol: HTTP
+      hosts:
+        - a4519973b91ce4f539dae6fc70f35fdc-83125446.ap-south-1.elb.amazonaws.com
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: mediator-vs
+spec:
+  hosts:
+    - a4519973b91ce4f539dae6fc70f35fdc-83125446.ap-south-1.elb.amazonaws.com
+    - mediator-service.default.svc.cluster.local
+  gateways:
+    - mesh
+    - ingress-gateway
+  http:
+    - route:
+        - destination:
+            host: mediator-service.default.svc.cluster.local
+      timeout: 4s
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: delayed-service-vs
+spec:
+  hosts:
+    - delayed-service-svc.default.svc.cluster.local
+  http:
+    - route:
+        - destination:
+            host: delayed-service-svc.default.svc.cluster.local
+      timeout: 2s
+---
+
